@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>历史文字模拟器 · 崇祯十七年</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- 主菜单 -->
+<div id="mainMenu" class="screen">
+  <div class="menu-inner">
+    <div class="menu-title">
+      <div class="menu-title-main">历史文字模拟器</div>
+      <div class="menu-title-sub">青史如棋 · 落子无悔</div>
+    </div>
+    <div class="scenario-list">
+      <div class="scenario-card active" data-start="chongzhen">
+        <div class="scenario-era">明 · 崇祯十七年（1644）</div>
+        <div class="scenario-name">甲申国难</div>
+        <div class="scenario-desc">
+          闯军已渡河，关外有东虏，朝中无饷，九边皆摇。<br>
+          你将扮演崇祯皇帝朱由检，在正月初一至江山倾覆之间，面对一百四十件史事：臣工会不断上疏，史籍笔记随岁月展开，崇祯心语可听人声朗读。
+        </div>
+        <div class="scenario-tags"><span>140 个历史事件</span><span>多线结局</span><span>财政与军队系统</span></div>
+        <button class="btn-primary start-btn">▶ 开始游戏</button>
+        <button id="btnNewGame" class="btn-secondary menu-new hidden">＋ 新开一局</button>
+      </div>
+      <div class="scenario-card locked">
+        <div class="scenario-era">南明 · 弘光元年（1645）</div>
+        <div class="scenario-name">半壁山河</div>
+        <div class="scenario-desc">扬州十日、江阴八十一日、郑成功起兵……（制作中，敬请期待）</div>
+        <button class="btn-disabled" disabled>🔒 敬请期待</button>
+      </div>
+      <div class="scenario-card locked">
+        <div class="scenario-era">唐 · 天宝十四载（755）</div>
+        <div class="scenario-name">渔阳鼙鼓</div>
+        <div class="scenario-desc">安禄山起兵，潼关失守，马嵬坡之变……（制作中，敬请期待）</div>
+        <button class="btn-disabled" disabled>🔒 敬请期待</button>
+      </div>
+    </div>
+    <div class="menu-foot">史实推演 · 分岔不戏说 · 财政军制皆有据可依</div>
+  </div>
+</div>
+
+<!-- 游戏主界面 -->
+<div id="gameScreen" class="screen hidden">
+  <header class="topbar">
+    <div class="top-left-panel">
+      <button id="treasuryPanel" class="info-card treasury-card" title="点击查看各地岁入明细">
+        <div class="info-card-label">国 库</div>
+        <div class="info-card-main"><span id="treasuryTotal">0</span> <small>两</small></div>
+        <div class="info-card-sub">太仓 <b id="taicangVal">0</b> · 内帑 <b id="neikuVal">0</b></div>
+        <div class="info-card-sub">岁入应征 <b id="incomeTotal">0</b> · 实征约 <b id="incomeReal">0</b></div>
+      </button>
+      <button id="armyPanel" class="info-card army-card" title="点击查看各军兵力与将领">
+        <div class="info-card-label">军 队</div>
+        <div class="info-card-main"><span id="armyTotal">0</span> <small>人</small></div>
+        <div class="info-card-sub">实存 <b id="armyTotalLbl">0</b> · 在册 <b id="armyNominal">0</b></div>
+        <div class="info-card-sub">可战之兵约 <b id="armyEffective">0</b></div>
+        <div class="info-card-sub">军心 <b id="armyMorale">0</b> · 将领 <b id="armyGenerals">0</b> 员</div>
+      </button>
+    </div>
+    <div class="top-center">
+      <div id="reignTitle">崇祯十七年</div>
+      <div id="dateTitle" class="date-title">正月初一 · 甲申年</div>
+      <div id="seasonNote" class="season-note"></div>
+    </div>
+    <div class="top-right-stats">
+      <div class="mini-stat"><span>民心</span><b id="statMorale">0</b></div>
+      <div class="mini-stat"><span>朝议</span><b id="statCourt">0</b></div>
+      <div class="mini-stat"><span>军心</span><b id="statArmyM">0</b></div>
+      <div class="mini-stat"><span>君威</span><b id="statAuthority">0</b></div>
+    </div>
+  </header>
+
+  <main class="game-layout">
+    <section class="event-zone">
+      <div id="transitionOverlay" class="transition-overlay hidden">
+        <div class="note-card">
+          <div class="note-source" id="noteSource"></div>
+          <div class="note-text" id="noteText"></div>
+          <div class="note-hint" id="noteHint">点击任意处 · 先补全全文，再继续</div>
+        </div>
+      </div>
+      <div id="eventCard" class="event-card">
+        <div class="event-date-badge" id="eventDateBadge"></div>
+        <h2 id="eventTitle"></h2>
+        <div id="memorialBlock" class="memorial-block hidden">
+          <div class="memorial-head"><span id="memorialFrom"></span><button id="btnSpeakMemorial" class="speak-btn" title="朗读奏疏">🔊</button></div>
+          <div id="memorialQuote" class="memorial-quote"></div>
+        </div>
+        <div id="eventText" class="event-text"></div>
+        <div id="innerVoiceBlock" class="inner-voice hidden">
+          <div class="inner-voice-label">崇祯心语</div>
+          <div id="innerVoiceText"></div>
+        </div>
+        <div id="eventContext" class="event-context"></div>
+        <div id="optionsBox" class="options-box"></div>
+        <div id="choiceFeedback" class="choice-feedback hidden"></div>
+      </div>
+    </section>
+    <aside class="history-panel">
+      <div class="history-head">本局纪事 <span id="historyCount"></span></div>
+      <div id="historyLog" class="history-log"></div>
+    </aside>
+  </main>
+  <div class="game-actions">
+    <button id="btnSave" class="btn-small">💾 快速存档</button>
+    <button id="btnSaveExit" class="btn-small">📖 存档并退出</button>
+    <button id="btnSettings" class="btn-small">⚙ 声音与设置</button>
+    <button id="btnRestart" class="btn-small">↺ 重开本局</button>
+  </div>
+</div>
+
+<!-- 国库收入明细 -->
+<div id="incomeModal" class="modal hidden">
+  <div class="modal-box wide">
+    <div class="modal-head">
+      <h2>国库与天下岁入</h2>
+      <button class="modal-close" data-close="incomeModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="finance-summary">
+        <div><span>太仓存银</span><b id="mTaicang"></b></div>
+        <div><span>内帑存银</span><b id="mNeiku"></b></div>
+        <div><span>岁入应征</span><b id="mIncome"></b></div>
+        <div><span>实征预估</span><b id="mReal"></b></div>
+      </div>
+      <table class="detail-table" id="incomeTable">
+        <thead><tr><th>地方/项目</th><th>年额（两）</th><th>状态</th><th>实征预估（两）</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="table-note">注：数额为“应征额”估算，参考黄仁宇《十六世纪明代中国之财政与税收》、顾诚《明末农民战争史》等研究，综合田赋折银、存留起运、辽饷·剿饷·练饷三饷加派及盐课、关税、内帑项目，明末天下应征约在一千三百万两上下；太仓实收则远低于此。崇祯十七年初太仓存银据考仅数十万两，内帑实数无确载，今人估计约百万两。</p>
+    </div>
+  </div>
+</div>
+
+<!-- 军队明细 -->
+<div id="armyModal" class="modal hidden">
+  <div class="modal-box wide">
+    <div class="modal-head">
+      <h2>天下诸军</h2>
+      <button class="modal-close" data-close="armyModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="finance-summary">
+        <div><span>实存总兵力 / 账面</span><b id="mArmyTotal"></b> <small>/</small> <b id="mArmyNominal"></b></div>
+        <div><span>可战估计</span><b id="mArmyEff"></b></div>
+        <div><span>军心</span><b id="mArmyM"></b></div>
+        <div><span>可用将领</span><b id="mArmyG"></b></div>
+      </div>
+      <table class="detail-table" id="armyTable">
+        <thead><tr><th>军队</th><th>账面兵额</th><th>实存兵力</th><th>主将</th><th>驻地</th><th>忠诚</th><th>士气</th><th>状态</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="table-note">注：明末卫所制已近崩溃，各镇普遍缺额、吃空饷。表中“账面兵额”为兵册所载，“实存兵力”为今人研究常用估计；“可战”再按士气与忠诚折算，仅作推演参考。京营、左良玉等部账面与实数相差尤大。</p>
+    </div>
+  </div>
+</div>
+
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-box settings-box">
+    <div class="modal-head">
+      <h2>声音与设置</h2>
+      <button class="modal-close" data-close="settingsModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-row">
+        <label class="settings-label">人声朗读</label>
+        <label class="switch"><input type="checkbox" id="settingVoiceOn" checked><span class="slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <label class="settings-label">朗读音色</label>
+        <select id="settingVoiceProfile">
+          <option value="narrator">史官旁白（平稳）</option>
+          <option value="elder">老者（低沉迟缓）</option>
+          <option value="scholar">中年文人（清朗）</option>
+          <option value="general">武将（粗重急促）</option>
+          <option value="woman">女子（清婉）</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <label class="settings-label">语速</label>
+        <input type="range" id="settingRate" min="0.6" max="1.3" step="0.05" value="0.95">
+        <span id="settingRateVal" class="settings-val">0.95</span>
+      </div>
+      <div class="settings-row">
+        <label class="settings-label">音量</label>
+        <input type="range" id="settingVolume" min="0" max="1" step="0.05" value="0.9">
+        <span id="settingVolumeVal" class="settings-val">90%</span>
+      </div>
+      <div class="settings-hint">自动朗读：臣子奏疏原文、岁月流转中的史籍笔记、崇祯心语。也可点击各处的 🔊 按钮单独朗读。<br>音色取决于浏览器所安装的中文语音包；若当前音色不可用，将自动选择最接近的中文语音，并以语速、音调模拟角色。</div>
+      <div class="settings-buttons">
+        <button id="btnTestVoice" class="btn-secondary">试听音色</button>
+        <button id="btnCloseSettings" class="btn-primary">保存设置</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="endingModal" class="modal hidden">
+  <div class="modal-box ending-box">
+    <div class="modal-head"><h2 id="endingTitle">结局</h2></div>
+    <div class="modal-body">
+      <div id="endingText" class="ending-text"></div>
+      <div id="endingStats" class="ending-stats"></div>
+      <div class="ending-buttons">
+        <button id="btnEndingRestart" class="btn-primary">↺ 再活一回</button>
+        <button id="btnEndingMenu" class="btn-secondary">☰ 回到主菜单</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<script src="data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
