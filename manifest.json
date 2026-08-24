@@ -1,0 +1,16 @@
+{
+  "name": "历史文字模拟器 · 崇祯十七年",
+  "short_name": "历史文字模拟器",
+  "description": "扮演崇祯皇帝，经历140个历史事件与506个抉择的多线文字模拟游戏。",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#171310",
+  "theme_color": "#8f2f2b",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

@@ -247,3 +247,56 @@ button{font-family:inherit; cursor:pointer;}
 .note-divider{
   text-align:center; color:#7c6b50; font-size:12px; letter-spacing:.35em; margin:6px 0 10px;
 }
+
+/* ============ 手机版优化 ============ */
+@media (max-width:720px){
+  body{font-size:15px;}
+  .topbar{
+    position:relative; flex-wrap:wrap; gap:8px; padding:8px;
+    padding-top:max(8px, env(safe-area-inset-top)); padding-left:max(8px, env(safe-area-inset-left)); padding-right:max(8px, env(safe-area-inset-right));
+  }
+  .top-center{order:-1; width:100%; padding:2px 0 4px;}
+  #reignTitle{font-size:16px; letter-spacing:.2em;}
+  .date-title{font-size:20px;}
+  .season-note{font-size:11px;}
+  .top-left-panel{width:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .info-card{min-width:0; width:100%; padding:8px 10px;}
+  .info-card-main{font-size:19px;}
+  .top-right-stats{width:100%; display:grid; grid-template-columns:repeat(4,1fr); gap:6px;}
+  .mini-stat{width:auto; padding:5px 2px;}
+  .game-layout{display:flex; flex-direction:column; padding:10px 10px 4px;}
+  .event-zone{min-height:auto;}
+  .event-card{padding:18px 14px 20px; min-height:auto;}
+  .event-card h2{font-size:23px;}
+  .event-text{font-size:16px;}
+  .event-context{font-size:12.5px;}
+  .option-btn{padding:13px 12px; font-size:15.5px; line-height:1.55;}
+  .option-btn .opt-tag{min-width:34px; margin-right:7px;}
+  .history-panel{max-height:38vh; min-height:180px;}
+  .game-actions{
+    padding:8px 10px calc(14px + env(safe-area-inset-bottom));
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+  }
+  .btn-small{padding:10px 8px; font-size:14px;}
+  .modal{padding:10px; align-items:flex-end;}
+  .modal-box{max-height:92vh; border-radius:14px 14px 0 0;}
+  .modal-head{padding:12px 16px;}
+  .modal-body{padding:12px 14px 18px;}
+  .finance-summary{grid-template-columns:repeat(2,1fr); gap:8px;}
+  .detail-table{font-size:12px;}
+  .detail-table th,.detail-table td{padding:5px 4px;}
+  .ending-stats{grid-template-columns:1fr 1fr;}
+  .note-card{padding:18px 14px; max-height:86%;}
+  .note-text{font-size:16.5px; line-height:1.9;}
+  .note-choice{font-size:15.5px;}
+  .scenario-list{flex-direction:column; align-items:center;}
+  .scenario-card{width:min(100%,420px); min-height:0;}
+  .menu-title-main{font-size:34px;}
+  .settings-row{flex-wrap:wrap;}
+  .settings-label{width:100%;}
+}
+@media (max-width:380px){
+  .event-card h2{font-size:20px;}
+  .event-text{font-size:15px;}
+  .date-title{font-size:18px;}
+}

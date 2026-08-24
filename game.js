@@ -644,6 +644,9 @@ function testVoice(){
 }
 /* ---------------- 事件绑定 ---------------- */
 document.addEventListener('DOMContentLoaded', function(){
+  if('serviceWorker' in navigator){
+    try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
+  }
   refreshMenu();
   refreshVoices();
   try{
