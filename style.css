@@ -230,3 +230,20 @@ button{font-family:inherit; cursor:pointer;}
   .top-right-stats{flex-wrap:wrap;}
 }
 .menu-new{margin-left:10px;}
+/* 前情承接 */
+.bridge-bar{
+  margin:0 0 12px; padding:9px 14px; border:1px dashed #5e4b2e; border-radius:8px;
+  background:rgba(0,0,0,.18);
+}
+.bridge-label{font-size:12px; color:#9c8b6f; letter-spacing:.22em; margin-bottom:3px;}
+.bridge-text{color:#d8c9a4; font-size:14.5px; line-height:1.8; text-align:justify;}
+/* 转场中的选择承接句 */
+.note-choice{
+  color:#e9d9b0; font-size:17px; line-height:1.9; text-align:justify; white-space:pre-wrap;
+  border-bottom:1px solid #4a3a28; padding-bottom:12px; margin-bottom:10px;
+}
+.note-choice::before{content:'『 '; color:var(--gold);}
+.note-choice::after{content:' 』'; color:var(--gold);}
+.note-divider{
+  text-align:center; color:#7c6b50; font-size:12px; letter-spacing:.35em; margin:6px 0 10px;
+}

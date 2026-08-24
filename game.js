@@ -159,6 +159,7 @@ function newState(){
   s.flags = {};
   s.history = [];
   s.collected = 0;
+  s.lastTransition = '';
   s.lastCollectDate = '1644-02-08';
   return s;
 }
@@ -276,6 +277,12 @@ function renderTop(){
 function eventExtra(ev){
   return (G.EVENT_EXTRAS && G.EVENT_EXTRAS[ev.id]) || {};
 }
+function optionTransition(ev, oi){
+  const key = ev.id+'|'+oi;
+  if(G.OPTION_TRANSITIONS && G.OPTION_TRANSITIONS[key]) return G.OPTION_TRANSITIONS[key];
+  if(G.buildOptionTransition) return G.buildOptionTransition(ev, oi);
+  return ev.title + '：' + ev.options[oi].text;
+}
 function renderEvent(){
   const ev = currentEvent;
   if(!ev) return;
@@ -297,6 +304,13 @@ function renderEvent(){
     $('innerVoiceText').textContent = ex.inner;
   }else{
     innerBlock.classList.add('hidden');
+  }
+  const bridge = $('bridgeBar');
+  if(state.lastTransition){
+    bridge.classList.remove('hidden');
+    $('bridgeText').textContent = state.lastTransition;
+  }else{
+    bridge.classList.add('hidden');
   }
   $('eventContext').textContent = ev.context ? ('【史实参考】' + ev.context) : '';
   $('choiceFeedback').classList.add('hidden');
@@ -380,8 +394,14 @@ function collectIncome(days){
   state.lastCollectDate = currentEvent ? currentEvent.date : state.date;
   return amount;
 }
+function contextNoteSource(ctx){
+  const m = String(ctx||'').match(/《[^》]+》/);
+  return m ? m[0] : '史事纪略';
+}
 function pickTransitionNote(ev){
   if(ev && G.TRANSITION_NOTES && G.TRANSITION_NOTES[ev.id]) return G.TRANSITION_NOTES[ev.id];
+  // 未单独配原文的事件，用该事件自己的史实参考作转场，避免通用句子反复出现
+  if(ev && ev.context) return {source: contextNoteSource(ev.context)+' · '+ev.lunar, text: ev.context};
   if(G.GENERAL_NOTES && G.GENERAL_NOTES.length){
     let chosen = G.GENERAL_NOTES[0];
     for(const n of G.GENERAL_NOTES){
@@ -397,6 +417,7 @@ function showTransition(days, ev){
   return new Promise(res=>{
     const ov = $('transitionOverlay');
     ov.classList.remove('hidden');
+    $('noteChoice').textContent = state.lastTransition || '';
     $('noteSource').textContent = (days>0 ? ('岁月流转 · '+days+'日后 · ') : '') + note.source;
     $('noteHint').textContent = '点击任意处 · 完整呈现后继续，亦可提前点击跳过';
     const textEl = $('noteText');
@@ -437,7 +458,7 @@ function showTransition(days, ev){
     };
     document.addEventListener('keydown', noteCleanup);
     ov.onclick = clickHandler;
-    if(settings.voiceOn) speak(fullText, settings.profile);
+    if(settings.voiceOn) speak((state.lastTransition?state.lastTransition+'。':'')+fullText, settings.profile);
     if(fullText){
       noteTimer = setInterval(()=>{
         i += 1;
@@ -488,7 +509,8 @@ async function chooseOption(i){
   busy = true;
   applyEffect(o.eff);
   if(o.flag) Object.assign(state.flags, o.flag);
-  state.history.push({date:ev.lunar, title:ev.title, choice:o.text});
+  state.lastTransition = optionTransition(ev, i);
+  state.history.push({date:ev.lunar, title:ev.title, choice:o.text, transition:state.lastTransition});
   renderTop(); renderHistory();
   $('choiceFeedback').classList.remove('hidden');
   $('choiceFeedback').textContent = (o.fb?('『'+o.text+'』\n'+o.fb):('你选择了：'+o.text));

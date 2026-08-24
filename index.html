@@ -22,7 +22,7 @@
           闯军已渡河，关外有东虏，朝中无饷，九边皆摇。<br>
           你将扮演崇祯皇帝朱由检，在正月初一至江山倾覆之间，面对一百四十件史事：臣工会不断上疏，史籍笔记随岁月展开，崇祯心语可听人声朗读。
         </div>
-        <div class="scenario-tags"><span>140 个历史事件</span><span>多线结局</span><span>财政与军队系统</span></div>
+        <div class="scenario-tags"><span>140 个历史事件</span><span>506 句选项承接</span><span>多线结局</span><span>财政与军队系统</span></div>
         <button class="btn-primary start-btn">▶ 开始游戏</button>
         <button id="btnNewGame" class="btn-secondary menu-new hidden">＋ 新开一局</button>
       </div>
@@ -78,14 +78,20 @@
     <section class="event-zone">
       <div id="transitionOverlay" class="transition-overlay hidden">
         <div class="note-card">
+          <div class="note-choice" id="noteChoice"></div>
+          <div class="note-divider">── 史籍所载 ──</div>
           <div class="note-source" id="noteSource"></div>
           <div class="note-text" id="noteText"></div>
-          <div class="note-hint" id="noteHint">点击任意处 · 先补全全文，再继续</div>
+          <div class="note-hint" id="noteHint">点击任意处 · 完整呈现后继续，亦可提前点击跳过</div>
         </div>
       </div>
       <div id="eventCard" class="event-card">
         <div class="event-date-badge" id="eventDateBadge"></div>
         <h2 id="eventTitle"></h2>
+        <div id="bridgeBar" class="bridge-bar hidden">
+          <div class="bridge-label">前情承接</div>
+          <div id="bridgeText" class="bridge-text"></div>
+        </div>
         <div id="memorialBlock" class="memorial-block hidden">
           <div class="memorial-head"><span id="memorialFrom"></span><button id="btnSpeakMemorial" class="speak-btn" title="朗读奏疏">🔊</button></div>
           <div id="memorialQuote" class="memorial-quote"></div>

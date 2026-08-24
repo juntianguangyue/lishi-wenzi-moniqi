@@ -1558,3 +1558,61 @@ Object.assign(G.EVENT_EXTRAS, {
   r1:{from:'史可法 密疏', memorial:'四镇各拥兵数万，若无节制，必成藩镇。请授臣督师之权，总制四镇。', inner:'江北的兵，到底是朝廷的兵，还是他们自家的兵？'},
   r2:{from:'史可法 再陈《江防三策》', memorial:'一曰定四镇汛地，二曰练瓜洲水师，三曰预积扬州粮。三策行，则江防可固。', inner:'南都的每一两银子，都有人在争。朕批下去，真能到扬州吗？'}
 });
+
+/* ===================== 每个选项的承接转场句 =====================
+   由“选项行为 + 选项反馈”自动生成，并对关键抉择手工润色。
+   转场画面会先显示此句，再显示下方史籍原文。 */
+G.CURATED_OPTION_TRANSITIONS = {
+  'e002|0':'漏下数刻，上密召李明睿入内殿，问以南迁路线与军饷。李明睿对答如流：由天津登舟，沿运河南下，旬月可至南京。',
+  'e002|1':'奏疏留中不发。宫中又恢复死一般的沉默，只有风霾拍打殿宇。',
+  'e002|2':'上作色曰：“卿欲弃宗庙社稷乎！”李明睿叩头出血而退，南迁之议一时再无人敢提。',
+  'e003|0':'礼部尚书倪元璐连夜草拟东宫监国仪注，太子南下之议自此而始。',
+  'n1|0':'上意遂决：密令有司筹备南迁。车驾、漕船、扈从，都在暗夜中点集。',
+  'n1|1':'折中之策遂定：命太子朱慈烺南下监国，上留京师守社稷。',
+  'n6|0':'旨下三日内启驾。乾清宫的烛火亮到天明，宫人开始收拾细软。',
+  'e005|1':'上意决然：“朕当亲征！”京营闻诏点兵，老弱者半，然天子出师之名已震天下。',
+  'e016|0':'诏命吴三桂放弃宁远，率关宁军入关勤王。山海关道上，终于有了调兵的烟尘。',
+  'e017|0':'太仓银二十万两运出，库房为之一空。吴三桂得银，回奏“克期入关”。',
+  'e031|0':'上意许和。阁臣中有人松了一口气，有人怒目而视。',
+  'e031|1':'上断然拒之：“朕不能以祖宗土地与人！”杜勋冷笑而去。',
+  'e032|0':'上亲赴皇城，王承恩仓促召集勇士营，火光中甲光凌乱。',
+  'e033|0':'上一步步向煤山走去，身后是燃烧的北京城。',
+  'e033|1':'上换便服、提剑上马，率数十骑自玄武门突围。',
+  'esc2|0':'齐化门紧闭，成国公朱纯臣闭门不纳。上转向崇文门，东方的天已经发白。',
+  'death|0':'天子守国门，君王死社稷。',
+  'm7|0':'史可法得饷，督师扬州。江防之议，终成北伐之图。',
+  'm12|0':'扬州城破，史可法不屈而死。消息传至南京，满城缟素。',
+  'm14|0':'上披甲登城，决意与南京同休。'
+};
+(function(){
+  function clean(t){ return String(t||'').replace(/[。！？；]+$/,''); }
+  function hash(evId, oi){ let h=0; const s=evId+':'+oi; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return h; }
+  function pick(arr, evId, oi){ return arr[hash(evId,oi)%arr.length]; }
+  function build(ev, oi){
+    const o = ev.options[oi];
+    const key = ev.id+'|'+oi;
+    if(G.CURATED_OPTION_TRANSITIONS[key]) return G.CURATED_OPTION_TRANSITIONS[key];
+    const action = clean(o.text);
+    let lead;
+    if(/^(命|诏|令|敕|传檄|封|调|遣|催|严旨|下诏)/.test(action)) lead = pick(['诏旨既下：','于是传谕中外：','敕书夜发：','朝廷遂下明诏：'], ev.id, oi);
+    else if(/^召/.test(action)) lead = pick(['于是：','上从之：','遂如所请：'], ev.id, oi);
+    else if(/^(问|议|命.*召)/.test(action)) lead = pick(['于是平台召对：','即命传召：','遂召入便殿：'], ev.id, oi);
+    else if(/^(发|赏|犒|给|捐|准.*发)/.test(action)) lead = pick(['国用虽窘，仍命开库：','库藏将空，仍发银以济：','银出太仓：'], ev.id, oi);
+    else if(/^(斩|严|斥|捕|查|追|逮|削|罢)/.test(action)) lead = pick(['天威震怒：','上意决然：','遂下严旨：'], ev.id, oi);
+    else if(/^(不|拒|留中|暂|再等|听|默|封锁)/.test(action)) lead = pick(['上意怫然：','犹豫久之，终曰：','遂留中不发：'], ev.id, oi);
+    else if(/^(密|夜|暗|潜)/.test(action)) lead = pick(['漏下数刻，密旨遂行：','当夜，密令出宫：','屏退左右，密旨遂下：'], ev.id, oi);
+    else if(/^(亲|自|率|登|混|奔|逃|藏|弃|出)/.test(action)) lead = pick(['事急矣：','仓皇之间：','于是易服出奔：'], ev.id, oi);
+    else lead = pick(['当是时也：','是日：','于是：','上默然良久，终曰：'], ev.id, oi);
+    const rawTail = o.fb || pick(['一时之间，朝野各有所动。','中外闻之，或喜或惧。','宫门之外，流言又起。','满城风雨，皆观上意。'], ev.id, oi);
+    const tail = clean(rawTail);
+    const tailComplete = /[。！？]['"”’]?$/.test(rawTail) || /[。！？]$/.test(tail);
+    return lead + action + '。' + tail + (tailComplete ? '' : '。');
+  }
+  G.buildOptionTransition = build;
+  G.OPTION_TRANSITIONS = {};
+  G.EVENTS.forEach(function(ev){
+    ev.options.forEach(function(o, oi){
+      G.OPTION_TRANSITIONS[ev.id+'|'+oi] = build(ev, oi);
+    });
+  });
+})();
